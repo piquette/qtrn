@@ -9,4 +9,5 @@ get:
 
 
 test:
+	curl https://glide.sh/get | sh
 	go test $(glide novendor)
