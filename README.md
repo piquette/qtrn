@@ -10,3 +10,8 @@
 qtrn is a command-line utility that displays current stock quotes in the terminal. qtrn development is currently pre-alpha and ongoing.
 
 **Note**: The `master` branch may be in an *unstable or even broken state* during development. Please use [releases][github-release] instead of the `master` branch in order to get stable binaries when they become available.
+
+
+## Usage
+
+Run `make build && ./qtrn help` during development to list possible commands.

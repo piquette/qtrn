@@ -24,7 +24,7 @@ func toDecimal(value string) (d decimal.Decimal) {
 
 func toEventValue(value string) Value {
 
-	if strings.Contains(value, ":") {
+	if strings.Contains(value, "/") {
 		return Value{
 			Ratio: value,
 		}

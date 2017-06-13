@@ -1,25 +1,13 @@
 language: go
-sudo: false
 
 go:
-  - 1.7
-  - 1.8
-  - tip
+  - 1.8.3
 
-os:
-  - linux
-  - osx
+branches:
+  only:
+    - master
 
-notifications:
-  email:
-    - ackleymi@gmail.com
-
-matrix:
-  allow_failures:
-    - go: tip
-  fast_finish: true
-
-install:
-  - make vendor
 script:
   - make test
+
+sudo: false

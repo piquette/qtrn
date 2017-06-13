@@ -31,14 +31,14 @@ import (
 
 // TODO: replace special characters in affixes (-, +, ¤) with control codes.
 
-// Format holds information for formatting numbers. It is designed to hold
+// Pattern holds information for formatting numbers. It is designed to hold
 // information from CLDR number patterns.
 //
 // This pattern is precompiled  for all patterns for all languages. Even though
 // the number of patterns is not very large, we want to keep this small.
 //
 // This type is only intended for internal use.
-type Format struct {
+type Pattern struct {
 	// TODO: this struct can be packed a lot better than it is now. Should be
 	// possible to make it 32 bytes.
 
@@ -53,7 +53,7 @@ type Format struct {
 	FormatWidth uint16
 
 	GroupingSize [2]uint8
-	Flags        FormatFlag
+	Flags        PatternFlag
 
 	// Number of digits.
 	MinIntegerDigits     uint8
@@ -65,11 +65,11 @@ type Format struct {
 	MinExponentDigits    uint8
 }
 
-// A FormatFlag is a bit mask for the flag field of a Format.
-type FormatFlag uint8
+// A PatternFlag is a bit mask for the flag field of a Format.
+type PatternFlag uint8
 
 const (
-	AlwaysSign FormatFlag = 1 << iota
+	AlwaysSign PatternFlag = 1 << iota
 	AlwaysExpSign
 	AlwaysDecimalSeparator
 	ParenthesisForNegative // Common pattern. Saves space.
@@ -85,7 +85,7 @@ const (
 )
 
 type parser struct {
-	*Format
+	*Pattern
 
 	leadingSharps int
 
@@ -104,7 +104,8 @@ func (p *parser) setError(err error) {
 }
 
 func (p *parser) updateGrouping() {
-	if p.hasGroup && p.groupingCount < 255 {
+	if p.hasGroup &&
+		0 < p.groupingCount && p.groupingCount < 255 {
 		p.GroupingSize[1] = p.GroupingSize[0]
 		p.GroupingSize[0] = uint8(p.groupingCount)
 	}
@@ -126,8 +127,8 @@ var (
 // ParsePattern extracts formatting information from a CLDR number pattern.
 //
 // See http://unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns.
-func ParsePattern(s string) (f *Format, err error) {
-	p := parser{Format: &Format{}}
+func ParsePattern(s string) (f *Pattern, err error) {
+	p := parser{Pattern: &Pattern{}}
 
 	s = p.parseSubPattern(s)
 
@@ -137,7 +138,7 @@ func ParsePattern(s string) (f *Format, err error) {
 			p.setError(errors.New("format: error parsing first sub pattern"))
 			return nil, p.err
 		}
-		neg := parser{Format: &Format{}} // just for extracting the affixes.
+		neg := parser{Pattern: &Pattern{}} // just for extracting the affixes.
 		s = neg.parseSubPattern(s[len(";"):])
 		p.NegOffset = uint16(len(p.buf))
 		p.buf = append(p.buf, neg.buf...)
@@ -154,7 +155,7 @@ func ParsePattern(s string) (f *Format, err error) {
 	} else {
 		p.Affix = affix
 	}
-	return p.Format, nil
+	return p.Pattern, nil
 }
 
 func (p *parser) parseSubPattern(s string) string {
@@ -163,6 +164,7 @@ func (p *parser) parseSubPattern(s string) string {
 	s = p.parsePad(s, PadAfterPrefix)
 
 	s = p.parse(p.number, s)
+	p.updateGrouping()
 
 	s = p.parsePad(s, PadBeforeSuffix)
 	s = p.parseAffix(s)
@@ -170,7 +172,7 @@ func (p *parser) parseSubPattern(s string) string {
 	return s
 }
 
-func (p *parser) parsePad(s string, f FormatFlag) (tail string) {
+func (p *parser) parsePad(s string, f PatternFlag) (tail string) {
 	if len(s) >= 2 && s[0] == '*' {
 		r, sz := utf8.DecodeRuneInString(s[1:])
 		if p.PadRune != 0 {
@@ -294,6 +296,8 @@ func (p *parser) integer(r rune) state {
 			next = p.exponent
 		case '.':
 			next = p.fraction
+		case ',':
+			next = p.integer
 		}
 		p.updateGrouping()
 		return next

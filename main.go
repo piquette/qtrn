@@ -14,8 +14,8 @@
 
 package main
 
-import "github.com/FlashBoys/qtrn/qtrnmain"
+import "github.com/FlashBoys/qtrn/cli"
 
 func main() {
-	qtrnmain.Main()
+	cli.Main()
 }

@@ -29,9 +29,9 @@ func Test_ToDecimal(t *testing.T) {
 func Test_ToEventValue(t *testing.T) {
 
 	// event from split Ratio.
-	split := toEventValue("1:5")
+	split := toEventValue("1/5")
 	// split should have a ratio of 1 to 5.
-	assert.Equal(t, "1:5", split.Ratio)
+	assert.Equal(t, "1/5", split.Ratio)
 	// split should not have a dividend amt.
 	assert.Equal(t, decimal.Decimal{}, split.Dividend)
 

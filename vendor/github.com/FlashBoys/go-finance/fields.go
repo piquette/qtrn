@@ -6,7 +6,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func mapFields(vals []string, fc int, v interface{}) {
+func mapFields(vals []string, fieldCount int, v interface{}) {
 
 	typ := reflect.TypeOf(v)
 	val := reflect.ValueOf(v).Elem()
@@ -15,7 +15,7 @@ func mapFields(vals []string, fc int, v interface{}) {
 		typ = typ.Elem()
 	}
 
-	for i := 0; i < fc; i++ {
+	for i := 0; i < fieldCount; i++ {
 
 		f := val.Field(i)
 
@@ -34,7 +34,7 @@ func mapFields(vals []string, fc int, v interface{}) {
 	}
 }
 
-func structFields(in interface{}) (str string, fc int) {
+func structFields(in interface{}) (str string, fieldCount int) {
 
 	typ := reflect.TypeOf(in)
 	if typ.Kind() == reflect.Ptr {
@@ -49,7 +49,7 @@ func structFields(in interface{}) (str string, fc int) {
 		}
 
 		str = str + tag
-		fc++
+		fieldCount++
 	}
 
 	return

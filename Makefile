@@ -1,13 +1,20 @@
+SHELL = bash
+MAKEFLAGS += --silent
+GOFILES ?= $(shell go list ./... | grep -v /vendor/)
+GOOS=$(shell go env GOOS)
+GOARCH=$(shell go env GOARCH)
 
-SHELL = /bin/sh
-.SUFFIXES:
-.SUFFIXES: .go
+.PHONY: build
 
-get:
-	go fmt && go clean && go build && ./qtrn get AAPL TWTR
-	go fmt && go clean && go build && ./qtrn get AAPL TWTR -f
-
+build:
+	go fmt && go clean && go build
 
 test:
+	go test $(GOFILES)
+
+update:
 	curl https://glide.sh/get | sh
-	go test $(glide novendor)
+	glide up && glide install
+
+cover:
+	go test $(GOFILES) --cover

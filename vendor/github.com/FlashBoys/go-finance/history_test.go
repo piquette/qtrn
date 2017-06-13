@@ -12,22 +12,30 @@ func Test_GetHistory(t *testing.T) {
 	defer s.Close()
 	HistoryURL = s.URL
 
-	bars, err := GetHistory("TWTR", Datetime{}, Datetime{}, Day)
+	cs := startCookieServer("yahoo_appl.html", true)
+	defer cs.Close()
+	sessionURL = cs.URL
+
+	bars, err := GetHistory("", Datetime{}, Datetime{}, Day)
 	assert.Nil(t, err)
 
-	// result should be a TWTR bar.
-	assert.Equal(t, "TWTR", bars[4].Symbol)
+	// result should correspond to the requested symbol bar.
+	assert.Equal(t, "", bars[4].Symbol)
 }
 
 func Test_GetEventHistory(t *testing.T) {
 
 	s := startTestServer("events_fixture.csv")
 	defer s.Close()
-	EventURL = s.URL
+	HistoryURL = s.URL
 
-	events, err := GetEventHistory("TWTR", Datetime{}, Datetime{})
+	cs := startCookieServer("yahoo_appl.html", true)
+	defer cs.Close()
+	sessionURL = cs.URL
+
+	events, err := GetEventHistory("", Datetime{}, Datetime{}, Dividends)
 	assert.Nil(t, err)
 
-	// result should be a TWTR event.
-	assert.Equal(t, "TWTR", events[4].Symbol)
+	// result should be a dividend event.
+	assert.Equal(t, "", events[4].Val.Ratio)
 }

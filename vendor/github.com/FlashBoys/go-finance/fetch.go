@@ -3,6 +3,7 @@ package finance
 import (
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -20,13 +21,13 @@ var (
 	// OptionsURL option chains
 	OptionsURL = "http://www.google.com/finance/option_chain?"
 	// HistoryURL quote history
-	HistoryURL = "http://ichart.finance.yahoo.com/table.csv"
-	// EventURL event history
-	EventURL = "http://ichart.finance.yahoo.com/x"
+	HistoryURL = "https://query1.finance.yahoo.com/v7/finance/download/"
 	// SymbolsURL symbols list
 	SymbolsURL = "http://www.batstrading.com/market_data/symbol_listing/csv/"
 	// QuoteURL stock quotes
 	QuoteURL = "http://download.finance.yahoo.com/d/quotes.csv"
+	// sessionURL cookie parsing
+	sessionURL = "https://finance.yahoo.com/quote/AAPL/history"
 )
 
 type optionsResponse struct {
@@ -38,9 +39,17 @@ type optionsResponse struct {
 	Puts        []map[string]string `json:"puts,omitempty"`
 }
 
-func fetchCSV(url string) (table [][]string, err error) {
+func fetchCSV(url string, cookie *http.Cookie) (table [][]string, err error) {
 
-	resp, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return
+	}
+	if cookie != nil {
+		req.AddCookie(cookie)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return
 	}
@@ -64,6 +73,36 @@ func buildURL(base string, params map[string]string) string {
 	url.RawQuery = q.Encode()
 
 	return url.String()
+}
+
+// getsession retrieves a session cookie and crumb to validate the yhoo request.
+func getsession() (*http.Cookie, string, error) {
+
+	req, err := http.NewRequest("GET", sessionURL, nil)
+	if err != nil {
+		return nil, "", err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, "", err
+	}
+	defer resp.Body.Close()
+
+	// Get cookies.
+	cookies := resp.Cookies()
+	if len(cookies) <= 0 {
+		return nil, "", errors.New("cookie unavailable")
+	}
+
+	// Get crumb.
+	b, err := ioutil.ReadAll(resp.Body)
+	match := rp.FindStringSubmatch(string(b))
+	if len(match) <= 1 {
+		return nil, "", errors.New("crumb unavailable")
+	}
+
+	return cookies[0], match[1], nil
 }
 
 // buildURL takes a base URL and parameters returns the full URL.

@@ -1,6 +1,7 @@
 package finance
 
 import (
+	"fmt"
 	"log"
 	"time"
 )
@@ -13,6 +14,7 @@ type Datetime struct {
 	Hour   int `json:",omitempty"`
 	Minute int `json:",omitempty"`
 	Second int `json:",omitempty"`
+	t      time.Time
 }
 
 // ParseDatetime creates a new instance of Datetime from a string.
@@ -41,6 +43,7 @@ func NewDatetime(t time.Time) Datetime {
 			Hour:   hour,
 			Minute: min,
 			Second: sec,
+			t:      t,
 		}
 	}
 
@@ -50,5 +53,10 @@ func NewDatetime(t time.Time) Datetime {
 		Month: int(month),
 		Day:   day,
 		Year:  year,
+		t:     t,
 	}
+}
+
+func (d Datetime) unixTime() string {
+	return fmt.Sprintf("%v", d.t.Unix())
 }

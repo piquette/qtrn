@@ -1,0 +1,49 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/lucy/runewidth",
+			"repository": "https://github.com/lucy/runewidth",
+			"vcs": "git",
+			"revision": "8a836fff36dcfae83556eac4731987e77f85a94c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/text/internal/gen",
+			"repository": "https://go.googlesource.com/text",
+			"vcs": "git",
+			"revision": "dafb3384ad25363d928a9e97ce4ad3a2f0667e34",
+			"branch": "master",
+			"path": "internal/gen",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/text/internal/triegen",
+			"repository": "https://go.googlesource.com/text",
+			"vcs": "git",
+			"revision": "dafb3384ad25363d928a9e97ce4ad3a2f0667e34",
+			"branch": "master",
+			"path": "/internal/triegen",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/text/internal/ucd",
+			"repository": "https://go.googlesource.com/text",
+			"vcs": "git",
+			"revision": "dafb3384ad25363d928a9e97ce4ad3a2f0667e34",
+			"branch": "master",
+			"path": "internal/ucd",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/text/unicode/cldr",
+			"repository": "https://go.googlesource.com/text",
+			"vcs": "git",
+			"revision": "dafb3384ad25363d928a9e97ce4ad3a2f0667e34",
+			"branch": "master",
+			"path": "unicode/cldr",
+			"notests": true
+		}
+	]
+}

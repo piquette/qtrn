@@ -1,28 +1,31 @@
 package finance
 
 import (
-	"strconv"
+	"regexp"
 
 	"github.com/shopspring/decimal"
 )
 
+var rp = regexp.MustCompile("\"CrumbStore\":{\"crumb\":\"([^\"]+)\"}")
+
 const (
 	// Day interval.
-	Day = "d"
+	Day = "1d"
 	// Week interval.
-	Week = "w"
+	Week = "1wk"
 	// Month interval.
-	Month = "m"
-
-	// Dividend constant.
-	Dividend = "DIVIDEND"
-	// Split constant.
-	Split = "SPLIT"
+	Month = "1mo"
+	// Dividends event type.
+	Dividends = "div"
+	// Splits event type.
+	Splits = "split"
 )
 
 type (
 	// Interval is the duration of the bars returned from the query.
 	Interval string
+	// EventType is the type of history event, either divs or splits.
+	EventType string
 	// Bar represents a single bar(candle) in time-series of quotes.
 	Bar struct {
 		Date     Datetime
@@ -30,16 +33,17 @@ type (
 		High     decimal.Decimal
 		Low      decimal.Decimal
 		Close    decimal.Decimal
-		Volume   int
 		AdjClose decimal.Decimal
+		Volume   int
 		Symbol   string `yfin:"-"`
 	}
+
 	// Event contains one historical event (either a split or a dividend).
 	Event struct {
-		EventType string
-		Date      Datetime
-		Val       Value
-		Symbol    string `yfin:"-"`
+		Date   Datetime
+		Val    Value
+		Type   EventType `yfin:"-"`
+		Symbol string    `yfin:"-"`
 	}
 	// Value is an event object that contains either a div amt or a split ratio.
 	Value struct {
@@ -51,22 +55,20 @@ type (
 // GetHistory fetches a single symbol's quote history from Yahoo Finance.
 func GetHistory(symbol string, start Datetime, end Datetime, interval Interval) (b []Bar, err error) {
 
-	// time range:
-	// start |- | | [bars..] | | -| end
-
-	params := map[string]string{
-		"s":      symbol,
-		"a":      strconv.Itoa(start.Month),
-		"b":      strconv.Itoa(start.Day),
-		"c":      strconv.Itoa(start.Year),
-		"d":      strconv.Itoa(end.Month),
-		"e":      strconv.Itoa(end.Day),
-		"f":      strconv.Itoa(end.Year),
-		"g":      string(interval),
-		"ignore": ".csv",
+	cookie, crumb, err := getsession()
+	if err != nil {
+		return
 	}
 
-	t, err := fetchCSV(buildURL(HistoryURL, params))
+	params := map[string]string{
+		"period1":  start.unixTime(),
+		"period2":  end.unixTime(),
+		"interval": string(interval),
+		"events":   "history",
+		"crumb":    crumb,
+	}
+
+	t, err := fetchCSV(buildURL(HistoryURL+symbol, params), cookie)
 	if err != nil {
 		return
 	}
@@ -89,22 +91,22 @@ func GetHistory(symbol string, start Datetime, end Datetime, interval Interval) 
 }
 
 // GetEventHistory fetches a single symbol's dividend and split history from Yahoo Finance.
-func GetEventHistory(symbol string, start Datetime, end Datetime) (e []Event, err error) {
+func GetEventHistory(symbol string, start Datetime, end Datetime, eventType EventType) (e []Event, err error) {
 
-	params := map[string]string{
-		"s":      symbol,
-		"a":      strconv.Itoa(start.Month),
-		"b":      strconv.Itoa(start.Day),
-		"c":      strconv.Itoa(start.Year),
-		"d":      strconv.Itoa(end.Month),
-		"e":      strconv.Itoa(end.Day),
-		"f":      strconv.Itoa(end.Year),
-		"g":      "v",
-		"y":      "0",
-		"ignore": ".csv",
+	cookie, crumb, err := getsession()
+	if err != nil {
+		return
 	}
 
-	t, err := fetchCSV(buildURL(EventURL, params))
+	params := map[string]string{
+		"period1":  start.unixTime(),
+		"period2":  end.unixTime(),
+		"interval": "1d",
+		"events":   string(eventType),
+		"crumb":    crumb,
+	}
+
+	t, err := fetchCSV(buildURL(HistoryURL+symbol, params), cookie)
 	if err != nil {
 		return
 	}
@@ -118,12 +120,10 @@ func GetEventHistory(symbol string, start Datetime, end Datetime) (e []Event, er
 			continue
 		}
 
-		isEvent := (row[0] == Dividend || row[0] == Split)
-		if isEvent {
-			mapFields(row, c, &ne)
-			ne.Symbol = symbol
-			e = append(e, ne)
-		}
+		mapFields(row, c, &ne)
+		ne.Symbol = symbol
+		ne.Type = eventType
+		e = append(e, ne)
 	}
 
 	return

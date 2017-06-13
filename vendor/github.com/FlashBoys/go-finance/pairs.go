@@ -208,7 +208,7 @@ func GetCurrencyPairQuote(symbol string) (fq FXPairQuote, err error) {
 		"e": ".csv",
 	}
 
-	t, err := fetchCSV(buildURL(QuoteURL, params))
+	t, err := fetchCSV(buildURL(QuoteURL, params), nil)
 	if err != nil {
 		return
 	}

@@ -64,7 +64,7 @@ func GetQuote(symbol string) (q Quote, err error) {
 		"e": ".csv",
 	}
 
-	t, err := fetchCSV(buildURL(QuoteURL, params))
+	t, err := fetchCSV(buildURL(QuoteURL, params), nil)
 	if err != nil {
 		return
 	}
@@ -85,7 +85,7 @@ func GetQuotes(symbols []string) (q []Quote, err error) {
 		"e": ".csv",
 	}
 
-	t, err := fetchCSV(buildURL(QuoteURL, params))
+	t, err := fetchCSV(buildURL(QuoteURL, params), nil)
 	if err != nil {
 		return
 	}

@@ -5,7 +5,7 @@ import "fmt"
 // GetUSEquitySymbols fetches the symbols available through BATS, ~8k symbols.
 func GetUSEquitySymbols() (symbols []string, err error) {
 
-	t, err := fetchCSV(SymbolsURL)
+	t, err := fetchCSV(SymbolsURL, nil)
 	if err != nil {
 		return []string{}, fmt.Errorf("error fetching symbols:  (error was: %s)\n", err.Error())
 	}

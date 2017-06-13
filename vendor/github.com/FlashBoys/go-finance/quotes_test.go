@@ -47,6 +47,19 @@ func startTestServer(fixtureFile string) *httptest.Server {
 	}))
 }
 
+func startCookieServer(htmlFile string, setCookie bool) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if setCookie {
+			w.Header().Set("Set-Cookie", "B=egouukdcjjdok&b=3&s=p0; Path=/; Domain=yahoo.com; Expires=Fri, 08 Jun 2018 20:44:04 GMT")
+		}
+		if htmlFile != "" {
+			fmt.Fprintln(w, getFixtureAsString(htmlFile))
+		} else {
+			fmt.Fprintln(w, "")
+		}
+	}))
+}
+
 func Test_GetQuote(t *testing.T) {
 
 	s := startTestServer("quote_fixture.csv")

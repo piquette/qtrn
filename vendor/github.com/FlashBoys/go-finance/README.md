@@ -104,7 +104,7 @@ func main() {
 
 	// Request daily history for TWTR.
 	// IntervalDaily OR IntervalWeekly OR IntervalMonthly are supported.
-	bars, err := finance.GetHistory("TWTR", start, end, finance.IntervalDaily)
+	bars, err := finance.GetHistory("TWTR", start, end, finance.Day)
 	if err == nil {
 		fmt.Println(bars)
 	}
@@ -125,12 +125,12 @@ import (
 
 func main() {
 	// Set time range from Jan 2010 up to the current date.
-	// This example will return a slice of both dividends and splits.
-	start, _ := finance.ParseDatetime("1/1/2010")
+	// This example will return a slice of either dividends or splits.
+	start := finance.ParseDatetime("1/1/2010")
 	end := finance.NewDatetime(time.Now())
 
 	// Request event history for AAPL.
-	events, err := finance.GetEventHistory("AAPL", start, end)
+	events, err := finance.GetEventHistory("AAPL", start, end, finance.Dividends)
 	if err == nil {
 		fmt.Println(events)
 	}
@@ -209,24 +209,31 @@ func main() {
 
 The primary technical tenants of this project are:
 
-  * Make financial data easy and fun to work with in Go-lang.
+  * Make financial data easy and fun to work with in Go.
   * Abstract the burden of non-sexy model serialization away from the end-user.
   * Provide a mature framework where the end-user needs only be concerned with analysis instead of data sourcing.
 
 There are several applications for this library. It's intentions are to be conducive to the following activities:
 
-  * Quantitative financial analysis in Golang.
+  * Quantitative financial analysis in Go.
   * Academic study/comparison in a clean, easy language.
   * Algorithmic/Statistical-based strategy implementation.
 
-## To-do
+## API Changes
 
-- [ ] Add greeks calculations to options data
-- [ ] Key stats (full profile) for securities
+Yahoo decided to deprecate the ichart API for historical data. A few things to note:
+
+  * Dividends and Splits got separated into their own calls, use `finance.Dividends` or `finance.Splits`.
+  * A cookie and a crumb are now needed in the new historical API. This requires 2 calls, slowing down the response time/quality.
+  * Continuation of the historical data funcs were made possible by the solution proposed by pandas contributors [here](https://github.com/pydata/pandas-datareader/pull/331), so thanks for the help!
+	* That PR is also reporting a degradation of data quality in the responses, so watch out for that.
+
+You can use the new health checking command to determine if all the endpoints are responding appropriately. Run `go run main.go` in the `cmd/health` directory and report any failures!
+
 
 ## Contributing
 
-If you find this repo helpful, please give it a star! If you wish to discuss changes to it, please open an issue. This project is not as mature as it could be, and financial projects in Golang are in drastic need of some basic helpful dependencies.
+If you find this repo helpful, please give it a star! If you wish to discuss changes to it, please open an issue. This project is not as mature as it could be, and financial projects in Go are in drastic need of some basic helpful dependencies.
 
 ## Similar Projects
 
