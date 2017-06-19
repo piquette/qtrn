@@ -59,7 +59,10 @@ func initConfig() {
 }
 
 // Main adds all child commands to the root command sets flags appropriately.
-func Main() {
+func Main(version string, build string) {
+	cmdQtrn.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		fmt.Printf("Running qtrn version %s build %s\n", version, build)
+	}
 	if err := cmdQtrn.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(-1)

@@ -14,8 +14,23 @@
 
 package main
 
-import "github.com/FlashBoys/qtrn/cli"
+import (
+	"fmt"
+
+	"github.com/FlashBoys/qtrn/cli"
+)
+
+// Build identification.
+var (
+	Version    string
+	Build      string
+	CommitHash string
+)
 
 func main() {
-	cli.Main()
+	if Version == "" || Build == "" || CommitHash == "" {
+		fmt.Println("\nID vars missing. Please use `make` to build the package.\n ")
+		return
+	}
+	cli.Main(Version, Build)
 }
