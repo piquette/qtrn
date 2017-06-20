@@ -16,7 +16,6 @@ package cli
 
 import (
 	"fmt"
-	"time"
 
 	finance "github.com/FlashBoys/go-finance"
 	ui "github.com/gizak/termui"
@@ -24,34 +23,46 @@ import (
 )
 
 const (
-	chartUsage     = "chart"
+	chartUsage     = "chart [symbol]"
 	chartShortDesc = "Print stock chart to the current shell"
-	chartLongDesc  = ""
+	chartLongDesc  = "Print stock chart to the current shell using a symbol, time frame, and interval."
 )
 
 var (
+	// chart command.
 	chartCmd = &cobra.Command{
 		Use:          chartUsage,
 		Short:        chartShortDesc,
 		Long:         chartLongDesc,
-		Run:          executeChart,
+		Aliases:      []string{"c"},
+		Example:      "$ qtrn chart AAPL -s 2016-12-01 -e 2017-06-20 -i 1d",
 		SilenceUsage: true,
+		Run:          chartFunc,
 	}
+	// flagStartTime set flag to specify the start time of the chart frame.
+	flagStartTime string
+	// flagEndTime set flag to specify the end time of the chart frame.
+	flagEndTime string
+	// flagInterval set flag to specify time interval of each chart point.
+	flagInterval string
 )
 
 func init() {
-	// symbol, frame, interval,
+	// time frame, interval.
+	chartCmd.Flags().StringVarP(&flagStartTime, "start", "s", "2017-01-01", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the chart's time frame")
+	chartCmd.Flags().StringVarP(&flagEndTime, "end", "e", "2017-06-20", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the chart's time frame")
+	chartCmd.Flags().StringVarP(&flagInterval, "interval", "i", finance.Day, "Set an interval ( 1d | 1wk | 1mo ) using `--interval` or `-i` to specify the time interval of each chart point")
 }
 
-// executeChart implements the chart command
-func executeChart(cmd *cobra.Command, args []string) {
+// chartFunc implements the chart command
+func chartFunc(cmd *cobra.Command, args []string) {
 
 	if len(args) > 1 {
-		fmt.Println("incorrect number of parameters")
+		fmt.Printf("\nToo many symbols, only 1 symbol is allowed for charting.\n\n")
 		return
 	}
 	sym := args[0]
-	p, d, err := fetchChartPoints(sym, "", finance.Day)
+	p, d, err := fetchChartPoints(sym, flagInterval)
 	if err != nil {
 		panic(err)
 	}
@@ -69,12 +80,12 @@ func executeChart(cmd *cobra.Command, args []string) {
 	draw(sym, p, d)
 }
 
-func fetchChartPoints(symbol string, frame string, interval finance.Interval) (points []float64, dates []string, err error) {
+func fetchChartPoints(symbol string, interval string) (points []float64, dates []string, err error) {
 
-	start := finance.ParseDatetime("1/1/2017")
-	end := finance.NewDatetime(time.Now())
+	start := finance.ParseDatetime(flagStartTime)
+	end := finance.ParseDatetime(flagEndTime)
 
-	bars, err := finance.GetHistory(symbol, start, end, interval)
+	bars, err := finance.GetHistory(symbol, start, end, finance.Interval(interval))
 	if err != nil {
 		return
 	}

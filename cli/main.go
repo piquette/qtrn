@@ -18,51 +18,36 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/FlashBoys/qtrn/version"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-var cfgFile string
-
-// cmdQtrn represents the base command when called without any subcommands
-var cmdQtrn = &cobra.Command{
-	Use:          "qtrn",
-	SilenceUsage: true,
-}
+var (
+	// cmdQtrn is the root command.
+	cmdQtrn = &cobra.Command{
+		Use: "qtrn",
+		Run: func(cmd *cobra.Command, args []string) {
+			if flagPrintVersion {
+				version.PrintVersion()
+				return
+			}
+			cmd.Usage()
+		},
+	}
+	//flagPrintVersion set flag to show current qtrn version.
+	flagPrintVersion bool
+)
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cmdQtrn.AddCommand(chartCmd)
+	cmdQtrn.AddCommand(writeCmd)
+	cmdQtrn.AddCommand(quoteCmd)
+	cmdQtrn.Flags().BoolVarP(&flagPrintVersion, "version", "v", false, "show the version and exit")
 
-	// Config.
-	cmdQtrn.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.qtrn.yaml)")
-	cmdQtrn.AddCommand(
-		chartCmd,
-		writeCmd,
-		quoteCmd,
-	)
 }
 
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" { // enable ability to specify config file via flag
-		viper.SetConfigFile(cfgFile)
-	}
-
-	viper.SetConfigName(".qtrn") // name of config file (without extension)
-	viper.AddConfigPath("$HOME") // adding home directory as first search path
-	viper.AutomaticEnv()         // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
-}
-
-// Main adds all child commands to the root command sets flags appropriately.
-func Main(version string, build string) {
-	cmdQtrn.PersistentPreRun = func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Running qtrn version %s build %s\n", version, build)
-	}
+// MainFunc adds all child commands to the root command sets flags appropriately.
+func MainFunc() {
 	if err := cmdQtrn.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(-1)

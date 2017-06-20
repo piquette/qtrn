@@ -24,28 +24,32 @@ import (
 )
 
 const (
-	quoteUsage     = "quote"
+	quoteUsage     = "quote [symbols..]"
 	quoteShortDesc = "Print stock quote table to the current shell"
-	quoteLongDesc  = ""
+	quoteLongDesc  = "Print stock quote table to the current shell. For more than just OHLC data, use --full or -f for a full quote."
 )
 
 var (
-	fullFlag bool
+	// quote command.
 	quoteCmd = &cobra.Command{
 		Use:          quoteUsage,
 		Short:        quoteShortDesc,
 		Long:         quoteLongDesc,
-		Run:          executeQuote,
+		Aliases:      []string{"q"},
+		Example:      "$ qtrn quote AAPL GOOG FB",
 		SilenceUsage: true,
+		Run:          quoteFunc,
 	}
+	// flagFullOutput set flag for a more informative quote.
+	flagFullOutput bool
 )
 
 func init() {
-	quoteCmd.Flags().BoolVarP(&fullFlag, "full", "f", false, "Help message for full")
+	quoteCmd.Flags().BoolVarP(&flagFullOutput, "full", "f", false, "Set `--full` or `-f` for a more informative quote for each symbol")
 }
 
-// executeQuote implements the get command
-func executeQuote(cmd *cobra.Command, args []string) {
+// quoteFunc implements the quote command
+func quoteFunc(cmd *cobra.Command, args []string) {
 
 	// Print regular
 	quotes, err := finance.GetQuotes(args[:])
@@ -56,7 +60,7 @@ func executeQuote(cmd *cobra.Command, args []string) {
 
 	table := tablewriter.NewWriter(os.Stdout)
 
-	if fullFlag {
+	if flagFullOutput {
 		table.SetAlignment(tablewriter.ALIGN_LEFT)
 		table.AppendBulk(setFullQuote(quotes))
 
