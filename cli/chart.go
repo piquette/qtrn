@@ -31,13 +31,12 @@ const (
 var (
 	// chart command.
 	chartCmd = &cobra.Command{
-		Use:          chartUsage,
-		Short:        chartShortDesc,
-		Long:         chartLongDesc,
-		Aliases:      []string{"c"},
-		Example:      "$ qtrn chart AAPL -s 2016-12-01 -e 2017-06-20 -i 1d",
-		SilenceUsage: true,
-		Run:          chartFunc,
+		Use:     chartUsage,
+		Short:   chartShortDesc,
+		Long:    chartLongDesc,
+		Aliases: []string{"c"},
+		Example: "$ qtrn chart AAPL -s 2016-12-01 -e 2017-06-20 -i 1d",
+		Run:     chartFunc,
 	}
 	// flagStartTime set flag to specify the start time of the chart frame.
 	flagStartTime string

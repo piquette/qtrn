@@ -5,10 +5,9 @@ GOFILES ?= $(shell go list ./... | grep -v /vendor/)
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 GOPATH=$(shell go env GOPATH)
-VERSION=0.2
+VERSION=0.3
 
 LDFLAGS += -X "github.com/FlashBoys/qtrn/version.Version=$(VERSION)"
-LDFLAGS += -X "main.CommitHash=$(shell git rev-parse HEAD)"
 MAKEFLAGS += --silent
 
 .PHONY: dev clean test up vet release

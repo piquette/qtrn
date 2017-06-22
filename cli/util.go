@@ -17,6 +17,7 @@ package cli
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/FlashBoys/go-finance"
 )
@@ -48,4 +49,14 @@ func toInt(value string) int {
 // toString converts an int to a string.
 func toString(value int) string {
 	return strconv.Itoa(value)
+}
+
+// capitalizes a string.
+func capitalize(str string) string {
+	return strings.ToUpper(str)
+}
+
+// combine a string.
+func combine(strs []string, sep string) string {
+	return strings.Join(strs, sep)
 }

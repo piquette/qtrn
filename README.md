@@ -7,11 +7,19 @@
 
 ## About
 
-qtrn is a command-line utility that displays current stock quotes in the terminal. qtrn development is currently pre-alpha and ongoing.
+qtrn is a command-line utility that displays tables of stock quotes in the terminal.
 
 **Note**: The `master` branch may be in an *unstable or even broken state* during development. Please use [releases][github-release] instead of the `master` branch in order to get stable binaries when they become available.
 
-
 ## Usage
 
-Run `make build && ./qtrn help` during development to list possible commands.
+Run `make dev && qtrn help` during development to list possible commands.
+
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request

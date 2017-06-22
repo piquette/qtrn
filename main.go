@@ -15,20 +15,9 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/FlashBoys/qtrn/cli"
 )
 
-// Build identification.
-var (
-	CommitHash string
-)
-
 func main() {
-	if CommitHash == "" {
-		fmt.Println("\nID missing. Please use `make` to build the package.\n ")
-		return
-	}
 	cli.MainFunc()
 }

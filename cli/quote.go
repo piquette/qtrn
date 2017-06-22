@@ -32,13 +32,12 @@ const (
 var (
 	// quote command.
 	quoteCmd = &cobra.Command{
-		Use:          quoteUsage,
-		Short:        quoteShortDesc,
-		Long:         quoteLongDesc,
-		Aliases:      []string{"q"},
-		Example:      "$ qtrn quote AAPL GOOG FB",
-		SilenceUsage: true,
-		Run:          quoteFunc,
+		Use:     quoteUsage,
+		Short:   quoteShortDesc,
+		Long:    quoteLongDesc,
+		Aliases: []string{"q"},
+		Example: "$ qtrn quote AAPL GOOG FB",
+		Run:     quoteFunc,
 	}
 	// flagFullOutput set flag for a more informative quote.
 	flagFullOutput bool
