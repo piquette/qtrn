@@ -27,11 +27,11 @@ import (
 const (
 	writeUsage            = "write [subcommand]"
 	writeShortDesc        = "Writes a csv of stock market data"
-	writeLongDesc         = "Writes a csv of stock market data into a directory (default: ./qtrn-data/) using a subcommand `quote` for quotes or `history` for historical prices"
-	writeQuoteShortDesc   = ""
-	writeQuoteLongDesc    = ""
-	writeHistoryShortDesc = ""
-	writeHistoryLongDesc  = ""
+	writeLongDesc         = "Writes a csv of stock market data into the current directory using a subcommand `quote` for quotes or `history` for historical prices"
+	writeQuoteShortDesc   = "Writes a csv of a stock quote"
+	writeQuoteLongDesc    = "Writes a csv of a stock quote and can accomodate multiple symbols as arguments"
+	writeHistoryShortDesc = "Writes a csv of a historical data"
+	writeHistoryLongDesc  = "Writes a csv of a historical data, can only accept one symbol at a time"
 )
 
 var (
@@ -41,7 +41,7 @@ var (
 		Short:   writeShortDesc,
 		Long:    writeLongDesc,
 		Aliases: []string{"w"},
-		Example: "$ qtrn write -h [subcommand]",
+		Example: "$ qtrn write -h quote -f AAPL GOOG FB AMZN",
 		Run: func(cmd *cobra.Command, args []string) {
 			// Stub.
 			fmt.Printf("\nSubcommand not specified, use either ( quote | history )\n\n")
@@ -63,9 +63,7 @@ var (
 		Example: "$ qtrn write history",
 		Run:     writeHistoryFunc,
 	}
-	// flagWriteDirectory set flag to specify the directory into which the market data files are written.
-	flagWriteDirectory string
-	// flagWriteDirectory set flag to specify the directory into which the market data files are written.
+	// flagIncludeHeader set flag to specify whether to include the header in the file.
 	flagIncludeHeader bool
 	// flagFullOutput set flag to write a more informative quote.
 	flagWriteFullOutput bool
@@ -89,11 +87,10 @@ var (
 func init() {
 	writeCmd.AddCommand(writeQuoteCmd)
 	writeCmd.AddCommand(writeHistoryCmd)
-	writeCmd.Flags().StringVarP(&flagWriteDirectory, "dir", "d", "./qtrn-data", "")
 	writeCmd.Flags().BoolVarP(&flagIncludeHeader, "header", "h", true, "Set `--header` or `-h` to include the header in the csv. Default is TRUE.")
 	writeQuoteCmd.Flags().BoolVarP(&flagWriteFullOutput, "full", "f", false, "Set `--full` or `-f` to write a more informative quote for each symbol")
-	writeHistoryCmd.Flags().StringVarP(&flagWriteStartTime, "start", "s", "2017-01-01", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the csv time frame")
-	writeHistoryCmd.Flags().StringVarP(&flagWriteEndTime, "end", "e", "2017-06-22", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the csv time frame")
+	writeHistoryCmd.Flags().StringVarP(&flagWriteStartTime, "start", "s", "", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the csv time frame")
+	writeHistoryCmd.Flags().StringVarP(&flagWriteEndTime, "end", "e", "", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the csv time frame")
 	writeHistoryCmd.Flags().StringVarP(&flagWriteInterval, "interval", "i", finance.Day, "Set an interval ( 1d | 1wk | 1mo ) using `--interval` or `-i` to specify the time interval of each OHLC point")
 }
 
@@ -117,7 +114,6 @@ func writeQuoteFunc(cmd *cobra.Command, args []string) {
 	if err != nil {
 		fmt.Println("Error writing data")
 	}
-
 }
 
 // writeHistoryFunc implements the history write command.
@@ -129,8 +125,19 @@ func writeHistoryFunc(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	start := finance.ParseDatetime(flagWriteStartTime)
-	end := finance.ParseDatetime(flagWriteEndTime)
+	var start finance.Datetime
+	var end finance.Datetime
+	if flagWriteStartTime == "" {
+		start = finance.ParseDatetime(fmt.Sprintf("%v-01-01", time.Now().Year()))
+	} else {
+		start = finance.ParseDatetime(flagWriteStartTime)
+	}
+	if flagWriteEndTime == "" {
+		t := time.Now()
+		end = finance.ParseDatetime(fmt.Sprintf("%d-%02d-%02d", t.Year(), int(t.Month()), t.Day()))
+	} else {
+		end = finance.ParseDatetime(flagWriteEndTime)
+	}
 
 	bars, err := finance.GetHistory(symbol, start, end, finance.Interval(flagWriteInterval))
 	if err != nil {

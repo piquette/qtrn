@@ -16,6 +16,7 @@ package cli
 
 import (
 	"fmt"
+	"time"
 
 	finance "github.com/FlashBoys/go-finance"
 	ui "github.com/gizak/termui"
@@ -48,41 +49,56 @@ var (
 
 func init() {
 	// time frame, interval.
-	chartCmd.Flags().StringVarP(&flagStartTime, "start", "s", "2017-01-01", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the chart's time frame")
-	chartCmd.Flags().StringVarP(&flagEndTime, "end", "e", "2017-06-20", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the chart's time frame")
+	chartCmd.Flags().StringVarP(&flagStartTime, "start", "s", "", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the chart's time frame")
+	chartCmd.Flags().StringVarP(&flagEndTime, "end", "e", "", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the chart's time frame")
 	chartCmd.Flags().StringVarP(&flagInterval, "interval", "i", finance.Day, "Set an interval ( 1d | 1wk | 1mo ) using `--interval` or `-i` to specify the time interval of each chart point")
 }
 
 // chartFunc implements the chart command
 func chartFunc(cmd *cobra.Command, args []string) {
 
+	if len(args) == 0 {
+		fmt.Printf("\nPlease provide a symbol\n\n")
+		return
+	}
+
 	if len(args) > 1 {
 		fmt.Printf("\nToo many symbols, only 1 symbol is allowed for charting.\n\n")
 		return
 	}
 	sym := args[0]
-	p, d, err := fetchChartPoints(sym, flagInterval)
-	if err != nil {
-		panic(err)
-	}
-
-	if len(p) == 0 {
-		panic("no ")
+	points, dates, err := fetchChartPoints(sym, flagInterval)
+	if err != nil || len(points) == 0 {
+		fmt.Printf("\nError fetching chart data, please try again\n\n")
+		fmt.Println(err)
+		return
 	}
 
 	err = ui.Init()
 	if err != nil {
-		panic(err)
+		fmt.Printf("\nCannot render chart\n\n")
+		return
 	}
 	defer ui.Close()
 
-	draw(sym, p, d)
+	draw(sym, points, dates)
 }
 
 func fetchChartPoints(symbol string, interval string) (points []float64, dates []string, err error) {
 
-	start := finance.ParseDatetime(flagStartTime)
-	end := finance.ParseDatetime(flagEndTime)
+	var start finance.Datetime
+	var end finance.Datetime
+	if flagStartTime == "" {
+		start = finance.ParseDatetime(fmt.Sprintf("%v-01-01", time.Now().Year()))
+	} else {
+		start = finance.ParseDatetime(flagStartTime)
+	}
+	if flagEndTime == "" {
+		t := time.Now()
+		end = finance.ParseDatetime(fmt.Sprintf("%d-%02d-%02d", t.Year(), int(t.Month()), t.Day()))
+	} else {
+		end = finance.ParseDatetime(flagEndTime)
+	}
 
 	bars, err := finance.GetHistory(symbol, start, end, finance.Interval(interval))
 	if err != nil {
