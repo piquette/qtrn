@@ -7,7 +7,22 @@ branches:
   only:
     - master
 
+install:
+- mkdir /home/travis/gopath/bin
+- mkdir /home/travis/gopath/pkg
+- cd $HOME/gopath/src/github.com
+- mv `ls` foo
+- mv foo FlashBoys
+- cd FlashBoys/qtrn
+- GLIDE_OS_ARCH=`go env GOHOSTOS`-`go env GOHOSTARCH`
+- GLIDE_TAG=v0.12.3
+- GLIDE_LATEST_RELEASE_URL="https://github.com/Masterminds/glide/releases/download/${GLIDE_TAG}/glide-${GLIDE_TAG}-${GLIDE_OS_ARCH}.tar.gz"
+- wget ${GLIDE_LATEST_RELEASE_URL} -O /tmp/glide.tar.gz
+- mkdir /tmp/glide
+- tar --directory=/tmp/glide -xvf /tmp/glide.tar.gz
+- export PATH=$PATH:/tmp/glide/${GLIDE_OS_ARCH}
+
 script:
-  - make test
+  - make cross test fmtcheck
 
 sudo: false

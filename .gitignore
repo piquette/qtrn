@@ -1,3 +1,14 @@
-.idea/
+# Folders
+/vendor
+/out
+/release
+*.iso
+/.idea
+/.vscode
+*.iml
+/.vscode
+
+# Misc
+*.exe
 qtrn
 .DS_Store

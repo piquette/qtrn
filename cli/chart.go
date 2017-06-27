@@ -25,8 +25,8 @@ import (
 
 const (
 	chartUsage     = "chart [symbol]"
-	chartShortDesc = "Print stock chart to the current shell"
-	chartLongDesc  = "Print stock chart to the current shell using a symbol, time frame, and interval."
+	chartShortDesc = "Print stock chart to the current shell (still in beta)"
+	chartLongDesc  = "Print stock chart to the current shell using a symbol, time frame, and interval (still in beta)"
 )
 
 var (
