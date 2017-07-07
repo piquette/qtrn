@@ -1,10 +1,12 @@
-hash: 9ef6372e81d04aa88cc1b96ab52779e1907fb6973c57b7d956fd2e7caeddfbe3
-updated: 2017-06-27T02:33:14.439733136-04:00
+hash: c45c4fd29fb8deb97598f7ee1a9c0a3171e13a1b2a954d9806042664f7f2675a
+updated: 2017-07-07T01:07:31.946345026-04:00
 imports:
 - name: github.com/apcera/termtables
   version: ede7cf360c31aadf8becbeb4a580ccbc3605c5b7
 - name: github.com/FlashBoys/go-finance
-  version: 836c50e95e6959ce866d0bb1307272434fcb1430
+  version: 65cfa107c234f30dfb4827807c798cca12d66c6f
+  repo: git@github.com:FlashBoys/go-finance
+  vcs: git
 - name: github.com/gizak/termui
   version: 72304ddb9b4e9838426a021aad64a5a860e98324
 - name: github.com/inconshreveable/mousetrap
