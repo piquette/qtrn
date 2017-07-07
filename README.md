@@ -20,7 +20,7 @@ In order to use this awesome tool, you'll need to get it on your machine!
 2. Determine the appropriate distribution for your operating system (mac | windows | linux)
 3. Download and untar the distribution. Shortcut for macs:
 ```
-curl -sL https://github.com/FlashBoys/qtrn/releases/download/v0.4/qtrn-0.4-darwin-amd64.tgz | tar zx
+curl -sL https://github.com/FlashBoys/qtrn/releases/download/v0.5/qtrn-0.5-darwin-amd64.tgz | tar zx
 ```
 4. Move the binary into your local `$PATH`.
 5. Run `qtrn help`.
