@@ -1,9 +1,6 @@
 package: github.com/FlashBoys/qtrn
 import:
 - package: github.com/FlashBoys/go-finance
-  vcs: git
-  version: 65cfa107c234f30dfb4827807c798cca12d66c6f
-  repo: git@github.com:FlashBoys/go-finance
 - package: github.com/apcera/termtables
 - package: github.com/spf13/cobra
 - package: github.com/spf13/viper
