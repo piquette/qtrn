@@ -63,8 +63,8 @@ var (
 		Example: "$ qtrn write history",
 		Run:     writeHistoryFunc,
 	}
-	// flagIncludeHeader set flag to specify whether to include the header in the file.
-	flagIncludeHeader bool
+	// flagRemoveHeader set flag to specify whether to remove the header in the file.
+	flagRemoveHeader bool
 	// flagFullOutput set flag to write a more informative quote.
 	flagWriteFullOutput bool
 	// flagStartTime set flag to specify the start time of the csv frame.
@@ -87,7 +87,7 @@ var (
 func init() {
 	writeCmd.AddCommand(writeQuoteCmd)
 	writeCmd.AddCommand(writeHistoryCmd)
-	writeCmd.Flags().BoolVarP(&flagIncludeHeader, "header", "h", true, "Set `--header` or `-h` to include the header in the csv. Default is TRUE.")
+	writeCmd.Flags().BoolVarP(&flagRemoveHeader, "remove", "r", false, "Set `--remove` or `-r` to remove the header in the csv. Default is FALSE.")
 	writeQuoteCmd.Flags().BoolVarP(&flagWriteFullOutput, "full", "f", false, "Set `--full` or `-f` to write a more informative quote for each symbol")
 	writeHistoryCmd.Flags().StringVarP(&flagWriteStartTime, "start", "s", "", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the csv time frame")
 	writeHistoryCmd.Flags().StringVarP(&flagWriteEndTime, "end", "e", "", "Set a date (formatted YYYY-MM-DD) using `--start` or `-s` to specify the start of the csv time frame")
@@ -169,7 +169,7 @@ func writeData(header []string, prefix string, cmd string, data [][]string) erro
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	if flagIncludeHeader {
+	if !flagRemoveHeader {
 		err = writer.Write(header)
 		if err != nil {
 			return err

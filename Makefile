@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # qtrn version
-QTRN_VERSION = 0.5
+QTRN_VERSION = 0.5.1
 
 # Go and compilation related variables
 BUILD_DIR ?= out
