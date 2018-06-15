@@ -1,7 +1,7 @@
 package version
 
 // Package is the overall, canonical project import path under which the
-var Package = "github.com/FlashBoys/qtrn"
+var Package = "github.com/piquette/qtrn"
 
 // Version indicates which version of the binary is running. This is set to
 // the latest release tag by hand, always suffixed by "+unknown". During

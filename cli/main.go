@@ -1,4 +1,4 @@
-// Copyright © 2017 Michael Ackley <ackleymi@gmail.com>
+// Copyright © 2018 Piquette Capital, LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/FlashBoys/qtrn/version"
+	"github.com/piquette/qtrn/version"
 	"github.com/spf13/cobra"
 )
 
@@ -39,9 +39,9 @@ var (
 )
 
 func init() {
-	cmdQtrn.AddCommand(chartCmd)
-	cmdQtrn.AddCommand(writeCmd)
-	cmdQtrn.AddCommand(quoteCmd)
+	//	cmdQtrn.AddCommand(chartCmd)
+	//	cmdQtrn.AddCommand(writeCmd)
+	cmdQtrn.AddCommand(equityCmd)
 	cmdQtrn.Flags().BoolVarP(&flagPrintVersion, "version", "v", false, "show the version and exit")
 
 }

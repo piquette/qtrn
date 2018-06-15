@@ -1,4 +1,4 @@
-// Copyright © 2017 Michael Ackley <ackleymi@gmail.com>
+// Copyright © 2018 Piquette Capital, LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package main
 
 import (
-	"github.com/FlashBoys/qtrn/cli"
+	"github.com/piquette/qtrn/cli"
 )
 
 func main() {

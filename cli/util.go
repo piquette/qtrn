@@ -1,4 +1,4 @@
-// Copyright © 2017 Michael Ackley <ackleymi@gmail.com>
+// Copyright © 2018 Piquette Capital, LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
 package cli
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/FlashBoys/go-finance"
+	finance "github.com/piquette/finance-go"
 )
 
-func getPrefix(q finance.Quote) string {
+func getPrefix(e *finance.Equity) string {
 
-	pricelast, _ := q.LastTradePrice.Float64()
-	priceclose, _ := q.PreviousClose.Float64()
+	pricelast := e.RegularMarketPrice
+	priceclose := e.RegularMarketPreviousClose
 	if pricelast > priceclose {
 		return "+"
 	}
@@ -36,8 +35,9 @@ func getPrefix(q finance.Quote) string {
 	return " "
 }
 
-func getFormattedDate(q finance.Quote) string {
-	return fmt.Sprintf("%02d:%02d:%02d %02d/%02d/%d", q.LastTradeTime.Hour, q.LastTradeTime.Minute, q.LastTradeTime.Second, q.LastTradeDate.Month, q.LastTradeDate.Day, q.LastTradeDate.Year)
+func getFormattedDate(e *finance.Equity) string {
+	return "DATE"
+	//return fmt.Sprintf("%02d:%02d:%02d %02d/%02d/%d", e.LastTradeTime.Hour, q.LastTradeTime.Minute, q.LastTradeTime.Second, q.LastTradeDate.Month, q.LastTradeDate.Day, q.LastTradeDate.Year)
 }
 
 // toInt converts a string to an int.
@@ -47,8 +47,13 @@ func toInt(value string) int {
 }
 
 // toString converts an int to a string.
-func toString(value int) string {
-	return strconv.Itoa(value)
+func toString(v int) string {
+	return strconv.Itoa(v)
+}
+
+// toStringF converts an int to a string.
+func toStringF(v float64) string {
+	return strconv.FormatFloat(v, 'E', -1, 64)
 }
 
 // capitalizes a string.

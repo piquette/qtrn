@@ -1,4 +1,4 @@
-// Copyright © 2017 Michael Ackley <ackleymi@gmail.com>
+// Copyright © 2018 Piquette Capital, LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,3 +13,18 @@
 // limitations under the License.
 
 package cli
+
+import (
+	"os"
+
+	log "github.com/sirupsen/logrus"
+)
+
+func init() {
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	log.SetOutput(os.Stdout)
+
+	// Only log the warning severity or above.
+	log.SetLevel(log.WarnLevel)
+}

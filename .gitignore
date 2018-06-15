@@ -1,7 +1,4 @@
 # Folders
-/vendor
-/out
-/release
 *.iso
 /.idea
 /.vscode
