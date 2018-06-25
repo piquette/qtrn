@@ -52,13 +52,7 @@ func init() {
 // equityFunc implements the equity command
 func equityFunc(cmd *cobra.Command, args []string) {
 
-	// Print regular
-	// quotes, err := finance.GetQuotes(args[:])
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-
+	// Iter.
 	i := equity.List(args)
 
 	var equities []*finance.Equity
@@ -73,21 +67,23 @@ func equityFunc(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	// Create table writer.
 	table := tw.NewWriter(os.Stdout)
 
-	// if flagFullOutput {
-	// 	//table.SetAlignment(tablewriter.ALIGN_LEFT)
-	// 	//table.AppendBulk(setFullQuote(quotes))
-	// } else {
-	// }
-
-	table.SetHeader([]string{"Symbol", "Time", "Last", "Change", "Vol", "Bid", "Size", "Ask", "Size", "Open", "Prev Close", "Company"})
-	table.AppendBulk(setTopOfBook(equities))
+	// Determine full or not.
+	if flagFullOutput {
+		table.SetAlignment(tw.ALIGN_LEFT)
+		table.AppendBulk(full(equities))
+	} else {
+		table.SetHeader([]string{"Symbol", "Time", "Last", "Change", "Vol", "Bid", "Size", "Ask", "Size", "Open", "Prev Close", "Company"})
+		table.AppendBulk(topOfBook(equities))
+	}
 
 	table.Render()
 }
 
-func setTopOfBook(equities []*finance.Equity) (data [][]string) {
+// topOfBook creates a table with basic quote information.
+func topOfBook(equities []*finance.Equity) (data [][]string) {
 
 	for _, e := range equities {
 		timestamp := getFormattedDate(e)
@@ -107,85 +103,50 @@ func setTopOfBook(equities []*finance.Equity) (data [][]string) {
 				toStringF(e.RegularMarketPreviousClose),
 				e.LongName,
 			})
-
 	}
 	return
-
 }
 
-// func setTopOfBook(quotes []finance.Quote) (data [][]string) {
-//
-// 	for _, q := range quotes {
-//
-// 		timestamp := getFormattedDate(q)
-// 		change := fmt.Sprintf("%s%s [%s%%]", getPrefix(q), q.ChangeNominal.String(), q.ChangePercent.String())
-// 		data = append(data,
-// 			[]string{
-// 				q.Symbol,
-// 				timestamp,
-// 				q.LastTradePrice.String(),
-// 				change,
-// 				toString(q.Volume),
-// 				q.Bid.String(),
-// 				toString(q.BidSize),
-// 				q.Ask.String(),
-// 				toString(q.AskSize),
-// 				q.Open.String(),
-// 				q.PreviousClose.String(),
-// 				q.Name,
-// 			})
-//
-// 	}
-// 	return
-// }
-//
-// func setFullQuote(quotes []finance.Quote) (data [][]string) {
-//
-// 	for i, q := range quotes {
-//
-// 		timestamp := getFormattedDate(q)
-// 		change := fmt.Sprintf("%s%s [%s%%]", getPrefix(q), q.ChangeNominal.String(), q.ChangePercent.String())
-//
-// 		data = append(data,
-// 			[]string{"Symbol", q.Symbol},
-// 			[]string{"Company", q.Name},
-// 			[]string{"Time", timestamp},
-// 			[]string{"Last", q.LastTradePrice.String()},
-// 			[]string{"Change", change},
-// 			[]string{"Vol", toString(q.Volume)},
-// 			[]string{"Bid", q.Bid.String()},
-// 			[]string{"Size", toString(q.BidSize)},
-// 			[]string{"Ask", q.Ask.String()},
-// 			[]string{"Size", toString(q.AskSize)},
-// 			[]string{"Open", q.Open.String()},
-// 			[]string{"Prev Close", q.PreviousClose.String()},
-// 			[]string{"Exchange", q.Exchange},
-// 			[]string{"Day High", q.DayHigh.String()},
-// 			[]string{"Day Low", q.DayLow.String()},
-// 			[]string{"52wk High", q.FiftyTwoWeekHigh.String()},
-// 			[]string{"52wk Low", q.FiftyTwoWeekLow.String()},
-// 			[]string{"Mkt Cap", q.MarketCap},
-// 			[]string{"50D MA", q.FiftyDayMA.String()},
-// 			[]string{"200D MA", q.TwoHundredDayMA.String()},
-// 			[]string{"Avg Daily Vol", toString(q.AvgDailyVolume)},
-// 			[]string{"EPS", q.EPS.String()},
-// 			[]string{"P/E", q.PERatio.String()},
-// 			[]string{"PEG Ratio", q.PEGRatio.String()},
-// 			[]string{"P/S", q.PriceSales.String()},
-// 			[]string{"P/B", q.PriceBook.String()},
-// 			[]string{"Div", q.DivPerShare.String()},
-// 			[]string{"Div Yield", q.DivYield.String()},
-// 			[]string{"EPS Est Next Qtr", q.EPSEstNextQuarter.String()},
-// 			[]string{"EPS Est Yr", q.EPSEstCurrentYear.String()},
-// 			[]string{"Short Ratio", q.ShortRatio.String()},
-// 			[]string{"Book Value", q.BookValue.String()},
-// 			[]string{"EBITDA", q.EBITDA},
-// 		)
-// 		l := len(quotes)
-// 		if l > 1 && i != l-1 {
-// 			data = append(data, []string{"", ""})
-// 		}
-// 	}
-//
-// 	return
-// }
+// full creates a table with a lot of quote information.
+func full(equities []*finance.Equity) (data [][]string) {
+
+	for i, e := range equities {
+		timestamp := getFormattedDate(e)
+		change := fmt.Sprintf("%s%s [%s%%]", getPrefix(e), toStringF(e.Quote.RegularMarketChange), toStringF(e.RegularMarketChangePercent))
+		data = append(data,
+			[]string{"Symbol", e.Symbol},
+			[]string{"Company", e.LongName},
+			[]string{"Time", timestamp},
+			[]string{"Last", toStringF(e.RegularMarketPrice)},
+			[]string{"Change", change},
+			[]string{"Vol", toString(e.RegularMarketVolume)},
+			[]string{"Bid", toStringF(e.Bid)},
+			[]string{"Size", toString(e.BidSize)},
+			[]string{"Ask", toStringF(e.Ask)},
+			[]string{"Size", toString(e.AskSize)},
+			[]string{"Open", toStringF(e.RegularMarketOpen)},
+			[]string{"Prev Close", toStringF(e.RegularMarketPreviousClose)},
+			[]string{"Exchange", e.ExchangeID},
+			[]string{"Day High", toStringF(e.RegularMarketDayHigh)},
+			[]string{"Day Low", toStringF(e.RegularMarketDayLow)},
+			[]string{"52wk High", toStringF(e.FiftyTwoWeekHigh)},
+			[]string{"52wk Low", toStringF(e.FiftyTwoWeekLow)},
+			[]string{"Mkt Cap", toString(int(e.MarketCap))},
+			[]string{"50D MA", toStringF(e.FiftyDayAverage)},
+			[]string{"200D MA", toStringF(e.TwoHundredDayAverage)},
+			[]string{"Avg Daily Vol", toString(e.AverageDailyVolume10Day)},
+			[]string{"EPS", toStringF(e.EpsForward)},
+			[]string{"P/E", toStringF(e.ForwardPE)},
+			[]string{"P/B", toStringF(e.PriceToBook)},
+			[]string{"Div", toStringF(e.TrailingAnnualDividendRate)},
+			[]string{"Div Yield", toStringF(e.TrailingAnnualDividendYield)},
+			[]string{"Short Ratio", toStringF(e.EpsForward)},
+		)
+
+		l := len(equities)
+		if l > 1 && i != l-1 {
+			data = append(data, []string{"", ""})
+		}
+	}
+	return
+}

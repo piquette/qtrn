@@ -15,8 +15,10 @@
 package cli
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	finance "github.com/piquette/finance-go"
 )
@@ -36,8 +38,11 @@ func getPrefix(e *finance.Equity) string {
 }
 
 func getFormattedDate(e *finance.Equity) string {
-	return "DATE"
-	//return fmt.Sprintf("%02d:%02d:%02d %02d/%02d/%d", e.LastTradeTime.Hour, q.LastTradeTime.Minute, q.LastTradeTime.Second, q.LastTradeDate.Month, q.LastTradeDate.Day, q.LastTradeDate.Year)
+	stamp := e.Quote.RegularMarketTime
+	dt := time.Unix(int64(stamp), 0)
+	y, m, d := dt.Date()
+	hr, min, sec := dt.Clock()
+	return fmt.Sprintf("%02d:%02d:%02d %02d/%02d/%d", hr, min, sec, int(m), d, y)
 }
 
 // toInt converts a string to an int.
@@ -53,7 +58,7 @@ func toString(v int) string {
 
 // toStringF converts an int to a string.
 func toStringF(v float64) string {
-	return strconv.FormatFloat(v, 'E', -1, 64)
+	return fmt.Sprintf("%.2f", v)
 }
 
 // capitalizes a string.
