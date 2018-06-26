@@ -101,8 +101,9 @@ func topOfBook(equities []*finance.Equity) (data [][]string) {
 				toString(e.AskSize),
 				toStringF(e.RegularMarketOpen),
 				toStringF(e.RegularMarketPreviousClose),
-				e.LongName,
+				parseString(e.LongName),
 			})
+
 	}
 	return
 }
@@ -115,7 +116,7 @@ func full(equities []*finance.Equity) (data [][]string) {
 		change := fmt.Sprintf("%s%s [%s%%]", getPrefix(e), toStringF(e.Quote.RegularMarketChange), toStringF(e.RegularMarketChangePercent))
 		data = append(data,
 			[]string{"Symbol", e.Symbol},
-			[]string{"Company", e.LongName},
+			[]string{"Company", parseString(e.LongName)},
 			[]string{"Time", timestamp},
 			[]string{"Last", toStringF(e.RegularMarketPrice)},
 			[]string{"Change", change},

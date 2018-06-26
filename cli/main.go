@@ -15,9 +15,12 @@
 package cli
 
 import (
+	"crypto/tls"
 	"fmt"
+	"net/http"
 	"os"
 
+	finance "github.com/piquette/finance-go"
 	"github.com/piquette/qtrn/version"
 	"github.com/spf13/cobra"
 )
@@ -39,11 +42,17 @@ var (
 )
 
 func init() {
+	//
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	finance.SetHTTPClient(client)
+
 	//	cmdQtrn.AddCommand(chartCmd)
 	//	cmdQtrn.AddCommand(writeCmd)
 	cmdQtrn.AddCommand(equityCmd)
 	cmdQtrn.Flags().BoolVarP(&flagPrintVersion, "version", "v", false, "show the version and exit")
-
 }
 
 // MainFunc adds all child commands to the root command sets flags appropriately.

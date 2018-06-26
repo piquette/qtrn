@@ -16,6 +16,7 @@ package cli
 
 import (
 	"fmt"
+	"html"
 	"strconv"
 	"strings"
 	"time"
@@ -37,6 +38,13 @@ func getPrefix(e *finance.Equity) string {
 	return " "
 }
 
+// parseString formats weird html strings.
+func parseString(s string) string {
+	s = strings.Replace(s, "&nbsp;", "", -1)
+	return html.UnescapeString(s)
+}
+
+// getFormattedDate returns a formatted date string from an equity.
 func getFormattedDate(e *finance.Equity) string {
 	stamp := e.Quote.RegularMarketTime
 	dt := time.Unix(int64(stamp), 0)
