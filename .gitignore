@@ -9,3 +9,4 @@
 *.exe
 qtrn
 .DS_Store
+dist/

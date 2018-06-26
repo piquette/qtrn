@@ -25,7 +25,7 @@ brew install qtrn
 2. Determine the appropriate distribution for your operating system (mac | windows | linux)
 3. Download and untar the distribution. Shortcut for macs:
 ```
-curl -sL https://github.com/piquette/qtrn/releases/download/v0.0.1/qtrn_0.0.1_darwin_amd64.tar.gz | tar zx
+curl -sL https://github.com/piquette/qtrn/releases/download/v0.0.1/qtrn_0.0.2_darwin_amd64.tar.gz | tar zx
 ```
 4. Move the binary into your local `$PATH`.
 5. Run `qtrn help`.
