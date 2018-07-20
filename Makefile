@@ -1,4 +1,3 @@
-
 # Copyright © 2018 Piquette Capital, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,23 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# qtrn version
-QTRN_VERSION = 0.5.1
-# Linker flags
-LDFLAGS := -X "github.com/piquette/qtrn/version.Version=$(QTRN_VERSION)"
+build:
+	go build -v
 
-.PHONY: release
-release:
-
-
-.PHONY: test
 test:
-	@go test -v ./...
+	go test -v ./...
 
-.PHONY: vet
 vet:
-
-.PHONY: dev
-dev:
-	go build -v -ldflags="$(LDFLAGS)"
-	cp qtrn $(GOPATH)/bin/
+	go vet ./...

@@ -8,6 +8,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dustin/go-humanize"
+  packages = ["."]
+  revision = "9f541cc9db5d55bce703bd99987c9d5cb8eea45e"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -30,10 +36,11 @@
   name = "github.com/piquette/finance-go"
   packages = [
     ".",
-    "equity",
-    "form"
+    "form",
+    "iter",
+    "quote"
   ]
-  revision = "eba126c332b8bd096349382691b5d8c3afa2f740"
+  revision = "d2ada33030039a9d9fc00d4bff89323cc2105614"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -44,14 +51,8 @@
 [[projects]]
   name = "github.com/shopspring/decimal"
   packages = ["."]
-  revision = "69b3a8ad1f5f2c8bd855cb6506d18593064a346b"
-  version = "1.0.1"
-
-[[projects]]
-  name = "github.com/sirupsen/logrus"
-  packages = ["."]
-  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
-  version = "v1.0.5"
+  revision = "cd690d0c9e2447b1ef2a129a6b7b49077da89b8e"
+  version = "1.1.0"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -71,24 +72,9 @@
   revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
   version = "v1.2.2"
 
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows"
-  ]
-  revision = "63fc586f45fe72d95d5240a5d5eb95e6503907d3"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "893685b2f475e6a2bacbec57cf58812f645880ccca0c3f8d5a4deba1e7581d16"
+  inputs-digest = "c9c349e80dba52c12f2d854727ef93b1a1214f40c7835922ccd3c8e2fd1587c3"
   solver-name = "gps-cdcl"
   solver-version = 1

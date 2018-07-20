@@ -8,7 +8,7 @@ The official cli tool for making financial markets analysis as fast as you are.
 
 ## Commands
 The current available commands are:
-* `equity` - prints tables of equity quotes to the current shell
+* `quote` - prints tables of quotes to the current shell
 
 ## Installation
 In order to use this awesome tool, you'll need to get it on your machine!
@@ -25,7 +25,7 @@ brew install qtrn
 2. Determine the appropriate distribution for your operating system (mac | windows | linux)
 3. Download and untar the distribution. Shortcut for macs:
 ```
-curl -sL https://github.com/piquette/qtrn/releases/download/v0.0.1/qtrn_0.0.2_darwin_amd64.tar.gz | tar zx
+curl -sL https://github.com/piquette/qtrn/releases/download/v0.0.3/qtrn_0.0.3_darwin_amd64.tar.gz | tar zx
 ```
 4. Move the binary into your local `$PATH`.
 5. Run `qtrn help`.
@@ -42,14 +42,39 @@ If your `$GOPATH` is configured, and git is setup to know your credentials, in a
 ## Usage
 Run the command `qtrn` in your shell for the list of possible commands.
 
-### Example
-The
-
-The preferred way to build qtrn for development is using `make`. Run `make dev && qtrn help` which builds the project, moves the binary into `$GOPATH/bin/` and lists possible commands.
-
 ### Contributing
+The preferred way to build qtrn for development is using `make`. Run `make build && qtrn help`.
+
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request :)
+
+
+## Release
+
+Release builds are generated with [goreleaser]. Make sure you have the software
+and a `GITHUB_TOKEN`: set in your env.
+
+``` sh
+go get -u github.com/goreleaser/goreleaser
+export GITHUB_TOKEN=...
+```
+
+Commit changes and tag `HEAD`:
+
+``` sh
+git tag v[NEW_VERSION_NUMBER]
+git push origin --tags
+```
+
+Then run goreleaser and you're done! Check [releases] (it also pushes to the
+Homebrew tap).
+
+``` sh
+goreleaser --rm-dist
+```
+
+[goreleaser]: https://github.com/goreleaser/goreleaser
+[releases]: https://github.com/piquette/qtrn/releases

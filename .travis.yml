@@ -1,11 +1,17 @@
 language: go
 
-go:
-  - 1.10
-  - tip
+go: 1.10.x
 
-
-install:
-
-
+# magic word to use faster/newer container-based architecture
 sudo: false
+
+before_install:
+  - go get -u github.com/golang/lint/golint
+
+script:
+  - make test
+  - make vet
+
+notifications:
+  email:
+    on_success: never
