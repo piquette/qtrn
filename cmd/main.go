@@ -51,7 +51,6 @@ func Execute() error {
 				version.PrintVersion()
 				return nil
 			}
-
 			return cmd.Usage()
 		},
 	}

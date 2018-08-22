@@ -17,6 +17,7 @@ package utils
 import (
 	"fmt"
 	"html"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -107,6 +108,27 @@ func NumberF(i int) string {
 	return humanize.Comma(int64(i))
 }
 
+// NumberFancyF adds suffixes to big numbers.
+func NumberFancyF(n int64) string {
+	sizes := []string{"-", "K", "M", "B", "T"}
+	return formatSuffixes(uint64(n), 1000, sizes)
+}
+
+func formatSuffixes(s uint64, base float64, sizes []string) string {
+	if s < 1000 {
+		return fmt.Sprintf("%d", s)
+	}
+	e := math.Floor(logn(float64(s), base))
+	val := math.Floor(float64(s)/math.Pow(base, e)*10) / 10
+	suffix := sizes[int(e)]
+
+	return fmt.Sprintf("%.2f%s", val, suffix)
+}
+
+func logn(n, b float64) float64 {
+	return math.Log(n) / math.Log(b)
+}
+
 // Strip strips weird html strings.
 func Strip(s string) string {
 	s = strings.Replace(s, "&nbsp;", "", -1)
@@ -114,9 +136,11 @@ func Strip(s string) string {
 }
 
 // DateF returns a formatted date string from a quote.
-func DateF(q *finance.Quote) string {
-	stamp := q.RegularMarketTime
-	dt := time.Unix(int64(stamp), 0)
+func DateF(timestamp int) string {
+	if timestamp == 0 {
+		return "--"
+	}
+	dt := time.Unix(int64(timestamp), 0)
 	y, m, d := dt.Date()
 	hr, min, sec := dt.Clock()
 	return fmt.Sprintf("%02d:%02d:%02d %02d/%02d/%d", hr, min, sec, int(m), d, y)
@@ -136,11 +160,6 @@ func ToString(v int) string {
 // ToStringF converts an int to a string.
 func ToStringF(v float64) string {
 	return fmt.Sprintf("%.2f", v)
-}
-
-// Capitalize a string.
-func Capitalize(str string) string {
-	return strings.ToUpper(str)
 }
 
 // combine a string.

@@ -15,11 +15,18 @@
 package quote
 
 import (
-	"fmt"
 	"os"
 
 	tw "github.com/olekukonko/tablewriter"
 	finance "github.com/piquette/finance-go"
+	"github.com/piquette/finance-go/crypto"
+	"github.com/piquette/finance-go/equity"
+	"github.com/piquette/finance-go/etf"
+	"github.com/piquette/finance-go/forex"
+	"github.com/piquette/finance-go/future"
+	"github.com/piquette/finance-go/index"
+	"github.com/piquette/finance-go/mutualfund"
+	"github.com/piquette/finance-go/option"
 	"github.com/piquette/finance-go/quote"
 	"github.com/piquette/qtrn/utils"
 	"github.com/spf13/cobra"
@@ -41,31 +48,30 @@ var (
 		Example: "$ qtrn quote AAPL GOOG FB",
 		RunE:    execute,
 	}
-	// fullF set flag for a more informative quote.
-	fullF bool
+	// infoF set flag for a more informative quote.
+	infoF bool
+	// formatF set flag to request quotes to specific asset types.
+	formatF string
 )
 
 func init() {
-	Cmd.Flags().BoolVarP(&fullF, "full", "f", false, "Set `--full` or `-f` for a more informative quote for each symbol")
+	Cmd.Flags().BoolVarP(&infoF, "info", "i", false, "set for a more informative quote for each symbol")
+	Cmd.Flags().StringVarP(&formatF, "format", "f", "", "set (equity|etf|future|fx|crypto|fund|option|idx) to request formatted quotes to specific asset types ")
 }
 
 // execute implements the quote command
 func execute(cmd *cobra.Command, args []string) error {
-	var qs []*finance.Quote
-
-	if len(args) == 3 {
-		return fmt.Errorf("this sucks")
-	}
-
-	// Get quotes.
-	iter := quote.List(args)
+	//
+	iter := quotes(args)
+	//
+	qs := []interface{}{}
 	for iter.Next() {
-		qs = append(qs, iter.Quote())
+		qs = append(qs, iter.Current())
 	}
-	// Check error.
 	if iter.Err() != nil {
 		return iter.Err()
 	}
+
 	// Create table writer.
 	table := tw.NewWriter(os.Stdout)
 	table.SetAutoWrapText(false)
@@ -79,21 +85,15 @@ func execute(cmd *cobra.Command, args []string) error {
 }
 
 // build builds table lines.
-func build(qs []*finance.Quote) (tbl [][]string) {
-
+func build(qs []interface{}) (tbl [][]string) {
 	// Get fields.
-	var fs []string
-	if fullF {
-		fs = FieldsFullQ()
-	} else {
-		fs = FieldsQ()
-	}
+	fs := fields()
 
 	// Append fields and values.
 	for _, f := range fs {
 		line := []string{utils.Bold(f)}
 		for _, q := range qs {
-			cell := MapQ(f, q)
+			cell := value(f, q)
 			line = append(line, cell)
 		}
 		tbl = append(tbl, line)
@@ -101,10 +101,89 @@ func build(qs []*finance.Quote) (tbl [][]string) {
 	return tbl
 }
 
-// []string{"Mkt Cap", utils.ToString(int(e.MarketCap))},
-// []string{"EPS", utils.ToStringF(e.EpsForward)},
-// []string{"P/E", utils.ToStringF(e.ForwardPE)},
-// []string{"P/B", utils.ToStringF(e.PriceToBook)},
-// []string{"Div", utils.ToStringF(e.TrailingAnnualDividendRate)},
-// []string{"Div Yield", utils.ToStringF(e.TrailingAnnualDividendYield)},
-// []string{"Short Ratio", utils.ToString(e.EpsForward)},
+// fields
+func fields() []string {
+	// Fields based on quote type.
+	switch formatF {
+	case "equity":
+		return FieldsEquity()
+	case "etf":
+		return FieldsETF()
+	case "option":
+		return FieldsOption()
+	case "future":
+		return FieldsFuture()
+	case "crypto":
+		return FieldsCrypto()
+	case "fx":
+		return FieldsForex()
+	case "idx":
+		return FieldIndex()
+	case "fund":
+		return FieldsMutualFund()
+	default:
+		if infoF {
+			return FieldsInfoQuote()
+		}
+		return FieldsQuote()
+	}
+}
+
+func value(field string, quote interface{}) string {
+	// Fields based on quote type.
+	switch formatF {
+	case "equity":
+		return MapEquity(field, quote.(*finance.Equity))
+	case "etf":
+		return MapETF(field, quote.(*finance.ETF))
+	case "option":
+		return MapOption(field, quote.(*finance.Option))
+	case "future":
+		return MapFuture(field, quote.(*finance.Future))
+	case "crypto":
+		return MapCrypto(field, quote.(*finance.CryptoPair))
+	case "fx":
+		return MapForex(field, quote.(*finance.ForexPair))
+	case "idx":
+		return MapIndex(field, quote.(*finance.Index))
+	case "fund":
+		return MapMutualFund(field, quote.(*finance.MutualFund))
+	default:
+		if infoF {
+			return MapQuote(field, quote.(*finance.Quote))
+		}
+		return MapQuote(field, quote.(*finance.Quote))
+	}
+}
+
+// quotes
+func quotes(symbols []string) quoteIter {
+	// Request based on quote type.
+	switch formatF {
+	case "equity":
+		return equity.List(symbols)
+	case "etf":
+		return etf.List(symbols)
+	case "option":
+		return option.List(symbols)
+	case "future":
+		return future.List(symbols)
+	case "crypto":
+		return crypto.List(symbols)
+	case "fx":
+		return forex.List(symbols)
+	case "idx":
+		return index.List(symbols)
+	case "fund":
+		return mutualfund.List(symbols)
+	default:
+		return quote.List(symbols)
+	}
+}
+
+// generic iter interface.
+type quoteIter interface {
+	Next() bool
+	Current() interface{}
+	Err() error
+}

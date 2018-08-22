@@ -13,7 +13,7 @@
 # limitations under the License.
 
 build:
-	go build -v
+	go build -v .
 
 test:
 	go test -v ./...
