@@ -160,7 +160,8 @@ static void drawchart(struct draw *drw)
 	if (!(drw->flags & DRAW_FLAG_RANGE)) {
 		drw->dmin = DBL_MAX;
 		drw->dmax = -DBL_MAX;
-		for (size_t i = drw->begin; i != drw->end; i = (i + 1) % dsize) {
+		size_t i;
+		for (i = drw->begin; i != drw->end; i = (i + 1) % dsize) {
 			if (data[i].low < drw->dmin)
 				drw->dmin = data[i].low;
 			if (data[i].high > drw->dmax)
@@ -187,7 +188,8 @@ static void drawchart(struct draw *drw)
 	/* draw the chart */
 	WINDOW *win = newwin(drw->maxy, drw->maxx - drw->margin, 0, 0);
 	int y = 0, x = 1, maxy = drw->maxy - 2;  /* -2 for the border */
-	for (size_t i = drw->begin; i != drw->end; i = (i + 1) % dsize)
+	size_t i;
+	for (i = drw->begin; i != drw->end; i = (i + 1) % dsize)
 		y = drw->drawpoint(drw, win, maxy, x++, data + i);
 	x = getmaxx(win) - 1;  /* fix x to the right side of the chart */
 	box(win, 0, 0);

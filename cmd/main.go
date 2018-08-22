@@ -19,6 +19,7 @@ import (
 	"net/http"
 
 	finance "github.com/piquette/finance-go"
+	"github.com/piquette/qtrn/cmd/options"
 	quote "github.com/piquette/qtrn/cmd/quote"
 
 	"github.com/piquette/qtrn/version"
@@ -58,6 +59,7 @@ func Execute() error {
 	//	cmdQtrn.AddCommand(chartCmd)
 	//	cmdQtrn.AddCommand(writeCmd)
 	c.AddCommand(quote.Cmd)
+	c.AddCommand(options.Cmd)
 	c.PersistentFlags().BoolVarP(&insecureF, "insecure", "x", false, "set `--insecure` or `-x` to skip tls verification during requests")
 	c.Flags().BoolVarP(&versionF, "version", "v", false, "show the version and exit")
 	return c.Execute()

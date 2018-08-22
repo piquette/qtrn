@@ -84,11 +84,11 @@ func execute(cmd *cobra.Command, args []string) error {
 }
 
 func fetch(symbol string, interval string) (points []float64, dates []string, err error) {
-
-	var start datetime.Datetime
-	var end datetime.Datetime
-
-	// if flagStartTime == "" {
+	//
+	// var start datetime.Datetime
+	// var end datetime.Datetime
+	//
+	// // if flagStartTime == "" {
 	// 	start = finance.ParseDatetime(fmt.Sprintf("%v-01-01", time.Now().Year()))
 	// } else {
 	// 	start = finance.ParseDatetime(flagStartTime)

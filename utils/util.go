@@ -146,6 +146,16 @@ func DateF(timestamp int) string {
 	return fmt.Sprintf("%02d:%02d:%02d %02d/%02d/%d", hr, min, sec, int(m), d, y)
 }
 
+// DateFS returns a short formatted date.
+func DateFS(timestamp int) string {
+	if timestamp == 0 {
+		return "--"
+	}
+	dt := time.Unix(int64(timestamp), 0)
+	y, m, d := dt.Date()
+	return fmt.Sprintf("%02d/%02d/%d", int(m), d, y)
+}
+
 // ToInt converts a string to an int.
 func ToInt(value string) int {
 	i, _ := strconv.Atoi(value)

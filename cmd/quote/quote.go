@@ -35,7 +35,7 @@ import (
 const (
 	usage = "quote"
 	short = "Print quote table to the current shell"
-	long  = "Print quote table to the current shell. For more than just OHLC data, use --full or -f for a full quote."
+	long  = "Print quote table to the current shell."
 )
 
 var (
@@ -45,7 +45,7 @@ var (
 		Short:   short,
 		Long:    long,
 		Aliases: []string{"q"},
-		Example: "$ qtrn quote AAPL GOOG FB",
+		Example: "qtrn quote AAPL GOOG FB",
 		RunE:    execute,
 	}
 	// infoF set flag for a more informative quote.
