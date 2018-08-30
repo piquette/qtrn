@@ -21,6 +21,7 @@ import (
 	finance "github.com/piquette/finance-go"
 	"github.com/piquette/qtrn/cmd/options"
 	quote "github.com/piquette/qtrn/cmd/quote"
+	"github.com/piquette/qtrn/cmd/write"
 
 	"github.com/piquette/qtrn/version"
 	"github.com/spf13/cobra"
@@ -57,7 +58,7 @@ func Execute() error {
 	}
 
 	//	cmdQtrn.AddCommand(chartCmd)
-	//	cmdQtrn.AddCommand(writeCmd)
+	c.AddCommand(write.Cmd)
 	c.AddCommand(quote.Cmd)
 	c.AddCommand(options.Cmd)
 	c.PersistentFlags().BoolVarP(&insecureF, "insecure", "x", false, "set `--insecure` or `-x` to skip tls verification during requests")

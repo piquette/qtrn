@@ -6,9 +6,13 @@
 # :zap: qtrn :zap:
 The official cli tool for making financial markets analysis as fast as you are.
 
+Pronounced "quote-tron" as a throwback to those awesome financial terminals of the 80's. This project is intended as a living example of the capabilities of the [finance-go] library.
+
 ## Commands
 The current available commands are:
 * `quote` - prints tables of quotes to the current shell
+* `options` - prints tables of options contract quotes to the current shell
+* `write` - writes tables of quotes/history to csv files
 
 ## Installation
 In order to use this awesome tool, you'll need to get it on your machine!
@@ -25,7 +29,7 @@ brew install qtrn
 2. Determine the appropriate distribution for your operating system (mac | windows | linux)
 3. Download and untar the distribution. Shortcut for macs:
 ```
-curl -sL https://github.com/piquette/qtrn/releases/download/v0.0.3/qtrn_0.0.3_darwin_amd64.tar.gz | tar zx
+curl -sL https://github.com/piquette/qtrn/releases/download/v0.0.5/qtrn_0.0.5_darwin_amd64.tar.gz | tar zx
 ```
 4. Move the binary into your local `$PATH`.
 5. Run `qtrn help`.
@@ -78,3 +82,4 @@ goreleaser --rm-dist
 
 [goreleaser]: https://github.com/goreleaser/goreleaser
 [releases]: https://github.com/piquette/qtrn/releases
+[finance-go]: https://github.com/piquette/finance-go

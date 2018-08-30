@@ -38,10 +38,10 @@
   version = "v0.0.3"
 
 [[projects]]
-  branch = "master"
   name = "github.com/mitchellh/go-wordwrap"
   packages = ["."]
-  revision = "ad45545899c7b13c020ea92b2072220eefad42b8"
+  revision = "9e67c67572bc5dd02aef930e2b0ae3c02a4b5a5c"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -60,6 +60,7 @@
   name = "github.com/piquette/finance-go"
   packages = [
     ".",
+    "chart",
     "crypto",
     "datetime",
     "equity",
@@ -74,7 +75,7 @@
     "options",
     "quote"
   ]
-  revision = "d2ada33030039a9d9fc00d4bff89323cc2105614"
+  revision = "1cd0201341aa94a2084bc293c78400c088f86476"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -109,6 +110,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "27a4134fb694ce7e686979b5368882108c686b65769b99b993b81bf83784d474"
+  inputs-digest = "9ddeb763d6c8ab33160292dd7ad5c06c71e57f4f5ffd6cf2d9999be78402a98d"
   solver-name = "gps-cdcl"
   solver-version = 1

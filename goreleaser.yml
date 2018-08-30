@@ -1,7 +1,7 @@
 build:
   binary: qtrn
   ldflags:
-    - -s -w -X version.Version={{.Version}}
+    - -s -X github.com/piquette/qtrn/version.Version={{.Version}}
   goos:
     - windows
     - darwin
