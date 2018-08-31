@@ -32,10 +32,10 @@ const (
 	usage        = "write"
 	short        = "Writes a csv of stock market data"
 	long         = "Writes a csv of stock market data into the current directory."
-	quoteShort   = "Writes a csv of a stock quote"
-	quoteLong    = "Writes a csv of a stock quote and can accomodate multiple symbols as arguments"
-	historyShort = "Writes a csv of a historical data"
-	historyLong  = "Writes a csv of a historical data, can only accept one symbol at a time"
+	quoteShort   = "Writes a csv of stock quotes"
+	quoteLong    = "Writes a csv of stock quotes and can accept multiple symbols as arguments"
+	historyShort = "Writes a csv of historical data"
+	historyLong  = "Writes a csv of historical data, can only accept one symbol at a time"
 )
 
 var (
@@ -220,7 +220,6 @@ func formatC(iter *chart.Iter) (data [][]string, err error) {
 			utils.ToString(b.Volume),
 			iter.Meta().Symbol,
 		}
-		fmt.Println(data)
 		data = append(data, p)
 	}
 	return data, iter.Err()
