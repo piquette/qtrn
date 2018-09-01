@@ -56,7 +56,6 @@
   revision = "d4647c9c7a84d847478d890b816b7d8b62b0b279"
 
 [[projects]]
-  branch = "master"
   name = "github.com/piquette/finance-go"
   packages = [
     ".",
@@ -75,7 +74,8 @@
     "options",
     "quote"
   ]
-  revision = "1cd0201341aa94a2084bc293c78400c088f86476"
+  revision = "4c9b6de5f7bb994ad6be825add9d94c7fa1fd7dd"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"

@@ -97,6 +97,10 @@ func write(iter *options.StraddleIter) error {
 
 // writeE writes the expiration dates table.
 func writeE(iter *options.StraddleIter) error {
+
+	if iter.Err() != nil {
+		return iter.Err()
+	}
 	// iterate.
 	meta := iter.Meta()
 	if meta == nil {
@@ -175,6 +179,5 @@ func build(ss []*finance.Straddle) (tbl [][]string) {
 }
 
 func fields() []string {
-
 	return []string{utils.Bold("Last Price"), utils.Bold("Change"), utils.Bold("% Change"), utils.Bold("Volume"), utils.Bold("Open Int")}
 }
