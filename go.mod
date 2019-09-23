@@ -6,6 +6,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gizak/termui v2.2.0+incompatible
+	github.com/guptarohit/asciigraph v0.4.1
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/maruel/panicparse v1.1.1 // indirect
 	github.com/mattn/go-runewidth v0.0.3 // indirect
