@@ -34,11 +34,17 @@ var (
 	listExpirationsF bool
 	// expirationF set flag to specify expiration date for the supplied symbol.
 	expirationF string
+	//openInterestF set flag to filter results by greater than or equal to OI for supplied symbol.
+	openInterestF int
+	//volume set flag to filter results by greater than or equal to volume for supplied symbol.
+	volumeF int
 )
 
 func init() {
 	Cmd.Flags().BoolVarP(&listExpirationsF, "list", "l", false, "list the available expiration dates for the supplied symbol. default is false.")
 	Cmd.Flags().StringVarP(&expirationF, "exp", "e", "", "set flag to specify expiration date for the supplied symbol. (formatted yyyy-mm-dd)")
+	Cmd.Flags().IntVarP(&openInterestF, "openInterest", "o", -1, "set flag to specify showing only results >= (int)")
+	Cmd.Flags().IntVarP(&volumeF, "volume", "v", -1, "set flag to specify showing only results >= (int)")
 }
 
 // execute implements the options command
@@ -48,7 +54,6 @@ func execute(cmd *cobra.Command, args []string) error {
 	if len(symbols) == 0 {
 		return fmt.Errorf("no symbols provided")
 	}
-
 	// fetch options.
 	p := &options.Params{
 		UnderlyingSymbol: symbols[0],
@@ -137,7 +142,7 @@ func build(ss []*finance.Straddle) (tbl [][]string) {
 		row := []string{}
 		// Call
 		call := s.Call
-		if call != nil {
+		if call != nil && call.OpenInterest >= openInterestF && call.Volume >= volumeF{
 			row = append(row, utils.ToStringF(call.LastPrice))
 			row = append(row, utils.ToStringF(call.Change))
 			row = append(row, utils.ToStringF(call.PercentChange))
@@ -154,7 +159,7 @@ func build(ss []*finance.Straddle) (tbl [][]string) {
 		row = append(row, utils.Bold(utils.ToStringF(s.Strike)))
 		// Put.
 		put := s.Put
-		if put != nil {
+		if put != nil && put.OpenInterest >= openInterestF && put.Volume >= volumeF{
 			row = append(row, utils.ToStringF(put.LastPrice))
 			row = append(row, utils.ToStringF(put.Change))
 			row = append(row, utils.ToStringF(put.PercentChange))
