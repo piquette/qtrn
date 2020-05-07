@@ -142,7 +142,7 @@ func build(ss []*finance.Straddle) (tbl [][]string) {
 		row := []string{}
 		// Call
 		call := s.Call
-		if call != nil && call.OpenInterest >= openInterestF && call.Volume >= volumeF{
+		if call != nil && call.OpenInterest >= openInterestF && call.Volume >= volumeF {
 			row = append(row, utils.ToStringF(call.LastPrice))
 			row = append(row, utils.ToStringF(call.Change))
 			row = append(row, utils.ToStringF(call.PercentChange))
@@ -159,7 +159,7 @@ func build(ss []*finance.Straddle) (tbl [][]string) {
 		row = append(row, utils.Bold(utils.ToStringF(s.Strike)))
 		// Put.
 		put := s.Put
-		if put != nil && put.OpenInterest >= openInterestF && put.Volume >= volumeF{
+		if put != nil && put.OpenInterest >= openInterestF && put.Volume >= volumeF {
 			row = append(row, utils.ToStringF(put.LastPrice))
 			row = append(row, utils.ToStringF(put.Change))
 			row = append(row, utils.ToStringF(put.PercentChange))
