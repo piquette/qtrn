@@ -9,32 +9,32 @@ build:
   goarch:
     - amd64
 
-brew:
-  github:
-    owner: piquette
-    name: homebrew-qtrn
-  homepage: "https://github.com/piquette/qtrn"
-  description: "qtrn is a tool for printing financial markets data to the console and writing data to files."
+brews:
+  - github:
+      owner: piquette
+      name: homebrew-qtrn
+    homepage: "https://github.com/piquette/qtrn"
+    description: "qtrn is a tool for printing financial markets data to the console and writing data to files."
 
-  plist: |
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    <plist version="1.0">
-      <dict>
-        <key>KeepAlive</key>
+    plist: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
         <dict>
-          <key>SuccessfulExit</key>
-          <false/>
+          <key>KeepAlive</key>
+          <dict>
+            <key>SuccessfulExit</key>
+            <false/>
+          </dict>
+          <key>Label</key>
+          <string>#{plist_name}</string>
+          <key>RunAtLoad</key>
+          <true/>
+          <key>WorkingDirectory</key>
+          <string>#{var}</string>
+          <key>StandardErrorPath</key>
+          <string>#{var}/log/qtrn.log</string>
+          <key>StandardOutPath</key>
+          <string>#{var}/log/qtrn.log</string>
         </dict>
-        <key>Label</key>
-        <string>#{plist_name}</string>
-        <key>RunAtLoad</key>
-        <true/>
-        <key>WorkingDirectory</key>
-        <string>#{var}</string>
-        <key>StandardErrorPath</key>
-        <string>#{var}/log/qtrn.log</string>
-        <key>StandardOutPath</key>
-        <string>#{var}/log/qtrn.log</string>
-      </dict>
-    </plist>
+      </plist>
