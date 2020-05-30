@@ -13,6 +13,7 @@ The current available commands are:
 * `quote` - prints tables of quotes to the current shell
 * `options` - prints tables of options contract quotes to the current shell
 * `write` - writes tables of quotes/history to csv files
+* `chart` - (beta) prints a nifty sparkline chart of security for various time frames
 
 ## Installation
 In order to use this awesome tool, you'll need to get it on your machine!
